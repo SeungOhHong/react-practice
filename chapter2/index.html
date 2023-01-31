@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>my website</h1>
+    <div id="banner"></div>
+    <footer>
+      <p>footer</p>
+    </footer>
+    <script type="text/babel">
+      const title = "방문을 환영합니다";
+      const subtitle = "리액트를 공부하는 공간입니다";
+      const address = "https://www.naver.com";
+      /*  const handleClick = (e) => {
+        console.log("클릭됨");
+        console.log("사이트명", title);
+        console.log(e);
+      }; */
+      // jsx문법에서는 오직 하나의 parent div를 가질 수 있다
+      const Banner = () => {
+        return (
+          <div>
+            <h2 className="banner">{title.toUpperCase}</h2>
+            <p>{subtitle}</p>
+            <button onClick={handleClick}>클릭해보세요</button>
+            <p>오늘의 날짜는 {new Date().toDateString()} 입니다 </p>
+            <p>행운의 숫자 {Math.floor(Math.random() * 100)}</p>
+            <a href={address}>네이버 방문하기</a>
+          </div>
+        );
+      };
+      // DOM에 컴포넌트 렌더하기 (ID가 banner 곳에 Banner 컴포넌트를 집어넣는다 )
+      ReactDOM.render(<Banner />, document.getElementById("banner"));
+    </script>
+  </body>
+</html>
