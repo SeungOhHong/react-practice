@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,windows,react
 
+# git reset HEAR 명령어로 이전에 git add했던 node모듈을 제거하였다
 ### react ###
 .DS_*
 *.log

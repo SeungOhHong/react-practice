@@ -1,14 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Header() {
-  // jsx문법에서는 class를 className으로 써야한다 html처럼 보이지만 자바스크립트이기 때문이다
   return (
     <header className="header-bar bg-primary mb-3">
       <div className="container d-flex flex-column flex-md-row align-items-center p-3">
         <h4 className="my-0 mr-md-auto font-weight-normal">
-          <a href="/" className="text-white">
+          {/* 헤더를 클릭하면 home으로 되돌아 오도록 링크를 to="/"로 설정해준다 */}
+          <Link to="/" className="text-white">
             ComplexApp
-          </a>
+          </Link>
         </h4>
         <form className="mb-0 pt-2 pt-md-0">
           <div className="row align-items-center">
