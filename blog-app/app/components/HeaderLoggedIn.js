@@ -1,7 +1,13 @@
-// 로그인 상태일 때 보여줄 ui
 import React, { useEffect } from "react";
 
 function HeaderLoggedIn(props) {
+  function handleLogout() {
+    props.setLoggedIn(false);
+    localStorage.removeItem("complexappToken");
+    localStorage.removeItem("complexappUsername");
+    localStorage.removeItem("complexappAvatar");
+  }
+
   return (
     <div className="flex-row my-3 my-md-0">
       <a href="#" className="text-white mr-2 header-search-icon">
@@ -14,17 +20,16 @@ function HeaderLoggedIn(props) {
       <a href="#" className="mr-2">
         <img
           className="small-header-avatar"
-          src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"
+          // 로그인시에 하드코딩된 프로필 이미지를 커스텀 할 수 있다
+          src={localStorage.getItem("complexappAvatar")}
         />
       </a>
       <a className="btn btn-sm btn-success mr-2" href="/create-post">
         Create Post
       </a>
-      <button
-        // 로그아웃 버튼을 누르면 로그인 상태가 false로 변경된다
-        onClick={() => props.setLoggedIn(false)}
-        className="btn btn-sm btn-secondary"
-      >
+      {/* 로그아웃 시에 로컬스토리지 내부에 저장한 데이터를 삭제해주는 함수 
+      {handleLogout}를 만든다 */}
+      <button onClick={handleLogout} className="btn btn-sm btn-secondary">
         Sign Out
       </button>
     </div>
