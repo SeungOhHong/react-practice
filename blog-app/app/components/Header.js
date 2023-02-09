@@ -1,5 +1,7 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React from "react";
+import { Link } from "react-router-dom";
+// 로그아웃 상태에서의 헤더 상단을 보여주는 컴포넌트를 임포트한다
+import HeaderLoggedOut from "./HeaderLoggedOut";
 
 function Header() {
   return (
@@ -10,22 +12,12 @@ function Header() {
             ComplexApp
           </Link>
         </h4>
-        <form className="mb-0 pt-2 pt-md-0">
-          <div className="row align-items-center">
-            <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-              <input name="username" className="form-control form-control-sm input-dark" type="text" placeholder="Username" autoComplete="off" />
-            </div>
-            <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-              <input name="password" className="form-control form-control-sm input-dark" type="password" placeholder="Password" />
-            </div>
-            <div className="col-md-auto">
-              <button className="btn btn-success btn-sm">Sign In</button>
-            </div>
-          </div>
-        </form>
+        {/* 로그인 상태에 따라서 헤더의 일부분만이 변경되도록 해야한다 
+        로그아웃 상태에서의 컴포넌트를 새로 만들어준다(HeaderLoggedOut)*/}
+        <HeaderLoggedOut />
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
