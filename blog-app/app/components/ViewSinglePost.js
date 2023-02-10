@@ -1,4 +1,3 @@
-// 포스트를 게시했을 때 해당 게시물에 대한 페이지 컴포넌를 생성해준다
 import React, { useEffect } from "react";
 import Page from "./Page";
 
