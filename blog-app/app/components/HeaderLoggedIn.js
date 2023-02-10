@@ -1,19 +1,15 @@
-// useContext를 임포트해준다
-import React, { useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
-// ExampleContext를 임포트해준다
-import ExampleContext from "../ExampleContext";
+import React, { useEffect, useContext } from "react"
+import { Link } from "react-router-dom"
+import ExampleContext from "../ExampleContext"
 
 function HeaderLoggedIn(props) {
-  // setLoggedIn변수를 {}로 감싸서
-  // 컨텍스트에서 리턴한 값들을 담아서 이용한다
-  const { setLoggedIn } = useContext(ExampleContext);
+  const { setLoggedIn } = useContext(ExampleContext)
 
   function handleLogout() {
-    setLoggedIn(false);
-    localStorage.removeItem("complexappToken");
-    localStorage.removeItem("complexappUsername");
-    localStorage.removeItem("complexappAvatar");
+    setLoggedIn(false)
+    localStorage.removeItem("complexappToken")
+    localStorage.removeItem("complexappUsername")
+    localStorage.removeItem("complexappAvatar")
   }
 
   return (
@@ -26,10 +22,7 @@ function HeaderLoggedIn(props) {
         <span className="chat-count-badge text-white"> </span>
       </span>
       <a href="#" className="mr-2">
-        <img
-          className="small-header-avatar"
-          src={localStorage.getItem("complexappAvatar")}
-        />
+        <img className="small-header-avatar" src={localStorage.getItem("complexappAvatar")} />
       </a>
       <Link className="btn btn-sm btn-success mr-2" to="/create-post">
         Create Post
@@ -38,7 +31,7 @@ function HeaderLoggedIn(props) {
         Sign Out
       </button>
     </div>
-  );
+  )
 }
 
-export default HeaderLoggedIn;
+export default HeaderLoggedIn
