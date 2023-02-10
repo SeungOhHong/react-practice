@@ -1,37 +1,34 @@
-// useState를 임포트해준다
 import React, { useEffect, useState } from "react";
+// 리액트 라우터에서 제공하는 useNavigate를 임포트해준다
+// 브라우저 히스토리에 접근할 수 있다
+import { useNavigate } from "react-router-dom";
 import Page from "./Page";
-// 엑시오스 임포트
 import Axios from "axios";
 
-function CreatePost() {
-  // 하드코딩된 value를 저장하는 것이 아니라 사용자가 입력한
-  // 값을 DB에 저장하기 위해서 useState함수로 title과 body의 상태를 추적한다
-  // 또한 input태그에 변화를 체킹하는 onChange 속성을 추가해준다
+function CreatePost(props) {
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
-  // 이 함수는 비동기로 작동하게 된다
+  // useNavigate함수를 정의해준다
+  const navigate = useNavigate();
+
   async function handleSubmit(e) {
-    // 브라우저 초기설정 막기
     e.preventDefault();
     try {
-      // post(a,b)
-      // a=> url
-      // b=> post 전송할 데이터 객체묶음
-      // 이제 url에서 계속해서 반복되는 localhost:8080을 생략하는 방법을 알아보자
-      // Main.js로 이동한다
-      // await키워드(비동기처리)
-      await Axios.post("/create-post", {
-        // 현재 post요청으로 전송할 데이터는 총 3개이다
-        // 로컬스토리지의 토큰을 전송하는 이유는
-        // 서버가 우리의 요청을 신뢰해도 된다는 근거를 제공하는 역할을 한다
+      const response = await Axios.post("/create-post", {
         title,
         body,
         token: localStorage.getItem("complexappToken"),
-        // 이제 게시물 생성 버튼을 클릭하면 몽고DB에 저장되는 것을 확인할 수 있다
-        // 하지만 이 시점에서는 제목과 본문이 공백상태에서 제출을 누르면 DB에 저장되지 않는다
-        // 그래서 form validation 처리를 해줘야한다
       });
+      // 새로 생성된 게시물에 대한 url을 재전송해준다
+      // 어떤 식으로? 리액트 라우터는 브라우저 히스토리를 관리하고 있다
+      // 그리고 그 히스토리에 접근하기 위해서 navigate라는 함수를 제공한다
+      // () 안에 명시한 파라미터 url을 재전송(리다이렉트) 한다
+      // post 요청을 서버로 전송하면 서버에서는 응답으로 새로 생성된 포스트에 대한 id를 보내준다
+      // 그것을 이용하기 위해서 response 변수에 응답 객체를 담은 후
+      // response.data로 접근하여 해당 게시물에 리다이렉트한다
+      navigate(`/post/${response.data}`);
+      // 게시물을 생성하면 해당 게시물에 대한 유니크한 id로 url이 리다이렉트 되는 것을
+      // 확인 할 수 있다. /post/:id 의 형식
       console.log("New post was created.");
     } catch (e) {
       console.log("There was a problem.");
@@ -40,25 +37,19 @@ function CreatePost() {
 
   return (
     <Page title="Create New Post">
-      {/* 이제 handleSubmit 함수를 만들어서
-      우리가 create-post버튼을 누르면 백엔드 서버에 post요청을 전송하도록 해보자(위에서 정의) */}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          {/* jsx문법: label for => htmlFor */}
           <label htmlFor="post-title" className="text-muted mb-1">
             <small>Title</small>
           </label>
           <input
-            // onChange 속성을 추가해준다
             onChange={(e) => setTitle(e.target.value)}
-            // jsx 문법에서는 속성이 autofocus가 아니라 autoFocus이다
             autoFocus
             name="title"
             id="post-title"
             className="form-control form-control-lg form-control-title"
             type="text"
             placeholder=""
-            // jsx문법: autocomplete => autoComplete
             autoComplete="off"
           />
         </div>
@@ -68,7 +59,6 @@ function CreatePost() {
             <small>Body Content</small>
           </label>
           <textarea
-            // onChange 속성을 추가해준다
             onChange={(e) => setBody(e.target.value)}
             name="body"
             id="post-body"
