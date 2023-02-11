@@ -1,9 +1,13 @@
-// useReducer를 임포트해준다
 import React, { useState, useReducer } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Axios from "axios";
 Axios.defaults.baseURL = "http://localhost:8080";
+
+// Example 컨텍스트 파일을 임포트하는 라인을 삭제하고
+// state와 dispatch 컨텍스트 파일을 임포트 해준다
+import StateContext from "./StateContext";
+import DispatchContext from "./DispatchContext";
 
 // My Components
 import Header from "./components/Header";
@@ -15,42 +19,19 @@ import Terms from "./components/Terms";
 import CreatePost from "./components/CreatePost";
 import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
-import ExampleContext from "./ExampleContext";
 
 function Main() {
-  // useReducer(a,b) 중 b 인자로 받는 초기상태값을 정의해준다
-  // 초기 상태값을 객체로 받는데 여러가지 데이터를 동시에 받을 수 있다
-  // 예를 들어서, 현재 로그인 상태, 나타나야할 팝업 알림 등등...
   const initialState = {
-    // 이제 loggedIn 과 flashMessages의 초기상태를 리듀서 내부에서 동시에 관리해준다
     loggedIn: Boolean(localStorage.getItem("complexappToken")),
     flashMessages: [],
   };
-  // 그리고 사실은 이러한 초기 상태들 값은 dispatch에 의해서 동시에 업데이트 된다
-  // dispatch({type:"login"})
-  // dispatch({type:"logout"})
-  // dispatch({type:"flashMessages"}) 이런 식으로 말이다
 
-  // 이 모든 것을 한번에 정의하는 것이 ourReducer함수이다
-  // 특정 액션에 대해서 앱의 상태가 어떻게 업데이트 돼야하는지 정의해준다
-  // ourReducer함수는 두 개의 인자를 전달 받는다
-  // ourReducer(a,b)   그리고 특정 액션을 지칭하는 dispatch({type:"login"})
-  // 안의 {type:"login"}이 action에 인자로 전달된다.
   function ourReducer(state, action) {
-    // 리듀서에서는 switch 문법이 많이 활용된다
-    // 스위치 문법에서는 ()에 여러가지의 케이스를 인자로 받고
-    // 해당 케이스에 따른 결과 같을 명시해준다
     switch (action.type) {
-      // 케이스1  "" 안에 들어가는 것이 type이다
       case "login":
-        // 초기에 주어진 상태 값을 객체의 원본 조작하는 것이 아니라
-        // 업데이트된 상태를 가지는 새로운 객체를 만들어야 하기 때문에
-        // 함수의 인자로 받은 이전 state를 통해서 접근한다
         return { loggedIn: true, flashMessages: state.flashMessages };
-      // 케이스2
       case "logout":
         return { loggedIn: false, flashMessages: state.flashMessages };
-      // 케이스3
       case "flashMessage":
         return {
           loggedIn: state.loggedIn,
@@ -58,46 +39,50 @@ function Main() {
         };
     }
   }
-  // userReducer는 useState의 친척격이다. 상태를 관리하는 라이브러리이다
-  // 그럼 언제는 리듀서를 쓰고 언제는 스테이트를 쓸까?
-  // 복잡한 상태 로직을 다룰 때에 리듀서를 쓴다
-  // 리듀서 함수를 정의해준다.
-  // useReducer함수는 두개의 값을 리턴한다
-  // const [a,b]
-  // a => 현재 상태
-  // b => 업데이트 상태
-  // 그렇다면 dispatch가 set스테이트의 b인자와 다른 점은 무엇일까?
-  // 우선 useReducer 함수가 무엇을 인자로 받는지 살펴보자
-  // useReducer(a,b)
-  // a는 함수를 b는 초기상태를 인자로 받는다. 각각은 위에서 정의 해준다
+
   const [state, dispatch] = useReducer(ourReducer, initialState);
-  // 즉 정리해보면 useReducer 함수가 호출되면 initialState가 정의되고
-  // 그 초기상태가 ourReducer함수로 인자로 전달된다.
-
-  const [loggedIn, setLoggedIn] = useState(
-    Boolean(localStorage.getItem("complexappToken"))
-  );
-  const [flashMessages, setFlashMessages] = useState([]);
-
-  function addFlashMessage(msg) {
-    setFlashMessages((prev) => prev.concat(msg));
-  }
+  // state를 이용해서 추적했던 로그인 상태와 팝업 알림 상태를 리듀서로 대체해보자
 
   return (
-    <ExampleContext.Provider value={{ addFlashMessage, setLoggedIn }}>
-      <BrowserRouter>
-        <FlashMessages messages={flashMessages} />
-        <Header loggedIn={loggedIn} />
-        <Routes>
-          <Route path="/" element={loggedIn ? <Home /> : <HomeGuest />} />
-          <Route path="/post/:id" element={<ViewSinglePost />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/about-us" element={<About />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-    </ExampleContext.Provider>
+    // state와 dispatch를 컨텍스트 제공자에 통과시켜서 컴포넌트에서 해당 값에
+    // 접근 할 수 있도록 해줘야 한다.
+    // <ExampleContext.Provider value = {{state,dispatch}}/>
+    // 위 처럼 상태를 추적해도 작동하는데에 이상없다
+    // 하지만 그것은 최적의 성능을 내는 방법은 아니다.
+    // 왜냐하면 모든 컴포넌트가 전역 상태에 접근할 필요는 없기 때문이다.
+    // 어떤 컴포넌트들은 dispatch에만 접근하면 된다.
+    // => 전역 상태에 변화가 생길 때마다 모든 컴포넌트가 리렌더링 되기 때문에 비효율적이다.
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        {/* 리액트 공식문서에서 추천하는 방법은 이런 식으로
+        두개의 컨텍스트 제공자를 이용하는 것이다
+      하나는 State를 위한 제공자, 나머지 하나는 dispatch를 위한 제공자 */}
+        <BrowserRouter>
+          {/* 이제 flashMessages 프로퍼티는 state 객체에 존재하기 때문에
+          state. 으로 접근해준다  */}
+          <FlashMessages messages={state.flashMessages} />
+          {/* 또한 더이상 수동으로 loggedIn 프로퍼티를 전달할 필요가 없다    */}
+          <Header />
+          <Routes>
+            <Route
+              path="/"
+              // 이제 더이상 로그인 상태를 useState로 추적하지 않기 때문에
+              // state 객체로 loggedIn으로 상태에 접근해준다.
+              // 이렇게 useState 로 관리하던 상태를 useReducer로 관리하면
+              // 상태 관리가 훨씬 쉽고 전체적으로 코드가 정돈된 느낌을 준다
+              // 그리고 상태관리가 쉬운 장점은 컴포넌트의 개수가 늘어나며 늘어날수록 빛을 발휘할 것이다
+              // 왜냐하면 모든 복잡한 로직을 한 곳에서 관리하기 때문이다.
+              element={state.loggedIn ? <Home /> : <HomeGuest />}
+            />
+            <Route path="/post/:id" element={<ViewSinglePost />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/about-us" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
   );
 }
 
