@@ -1,18 +1,15 @@
-import React, { useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
-// Dispatch(파견) 컨텍스트를 임포트해준다
-import DispatchContext from "../DispatchContext";
+import React, { useEffect, useContext } from "react"
+import { Link } from "react-router-dom"
+import DispatchContext from "../DispatchContext"
 
 function HeaderLoggedIn(props) {
-  // 파견 컨텍스트를 정의해준다
-  const appDispatch = useContext(DispatchContext);
+  const appDispatch = useContext(DispatchContext)
 
   function handleLogout() {
-    // 디스패치 컨텍스트로 action 타입을 정의해준다
-    appDispatch({ type: "logout" });
-    localStorage.removeItem("complexappToken");
-    localStorage.removeItem("complexappUsername");
-    localStorage.removeItem("complexappAvatar");
+    appDispatch({ type: "logout" })
+    localStorage.removeItem("complexappToken")
+    localStorage.removeItem("complexappUsername")
+    localStorage.removeItem("complexappAvatar")
   }
 
   return (
@@ -25,10 +22,7 @@ function HeaderLoggedIn(props) {
         <span className="chat-count-badge text-white"> </span>
       </span>
       <a href="#" className="mr-2">
-        <img
-          className="small-header-avatar"
-          src={localStorage.getItem("complexappAvatar")}
-        />
+        <img className="small-header-avatar" src={localStorage.getItem("complexappAvatar")} />
       </a>
       <Link className="btn btn-sm btn-success mr-2" to="/create-post">
         Create Post
@@ -37,7 +31,7 @@ function HeaderLoggedIn(props) {
         Sign Out
       </button>
     </div>
-  );
+  )
 }
 
-export default HeaderLoggedIn;
+export default HeaderLoggedIn

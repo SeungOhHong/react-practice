@@ -1,6 +1,5 @@
-// Dispatch 컨텍스트에 대한 파일과
-import { createContext } from "react";
+import { createContext } from "react"
 
-const DispatchContext = createContext();
+const DispatchContext = createContext()
 
-export default DispatchContext;
+export default DispatchContext
